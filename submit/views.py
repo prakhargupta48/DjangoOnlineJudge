@@ -3,14 +3,12 @@ from django.http import HttpResponse
 from submit.forms import CodeSubmissionForm
 from django.conf import settings
 from problems.models import Problem
-import os
 import uuid
 import subprocess
 from pathlib import Path
 
 
-def combined_page_view(request):
-    return render(request, 'submit/cp.html')
+
 
 def submit(request,id):
     if request.method == "POST":
@@ -29,7 +27,7 @@ def submit(request,id):
             submission.output_data = output
         # submission.expected_output = ex_outputs
          #   submission.input_data = input
-        submission.save()
+        
             
         try:
                 if submission.output_data.strip() == submission.expected_output.strip():
@@ -39,7 +37,7 @@ def submit(request,id):
         except Exception as e:
                 submission.output_data = str(e)
                 submission.verdict = 'Error'
-
+        submission.save()
         return render(request, "submit/result.html", {"submission": submission})
     else:
         form = CodeSubmissionForm()
